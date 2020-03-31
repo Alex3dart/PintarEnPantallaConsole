@@ -9,7 +9,9 @@ using namespace rlutil;
 const char* statNames[] = {
 	"FUE", "DES", "CON", "INT", "SAB", "CAR"
 };
-
+const char* characterNames[6] = {
+	"Abadol", "Mishalith", "Anorak", "Gandalf", "Stark", "Brandom"
+};
 #define NL printf("\n")
 
 #define V printf("\xBA")
@@ -22,13 +24,24 @@ const char* statNames[] = {
 
 
 
-PlayerStatBox_t::PlayerStatBox_t(int color, const char* name, int x, int y, int w, int h)
+PlayerStatBox_t::PlayerStatBox_t(int color, int x, int y, int w, int h)
 	: m_x{ x }, m_y{ y }, m_w{ w }, m_h{ h }, m_color{ color }
 {
 
-	strcpy(&m_name[0], name);
+}
 
+void PlayerStatBox_t::generateName()
+{
+	strcpy(m_name, characterNames[rand() % 6]);
+}
 
+void PlayerStatBox_t::generateStats()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		m_stats[i] = rand() % 15 + 3;
+
+	}
 }
 
 void PlayerStatBox_t::draw()
@@ -38,22 +51,16 @@ void PlayerStatBox_t::draw()
 	setColor(RED);
 	locate(m_x + 2, m_y +  1);
 
-	const char* names[] = { "dragon", "troll", "guerrero", "mago" };
-
-	int nombreAleatorio = rand() % 4;
-	printf(names[nombreAleatorio]);
-
-
-
 	for (int i = 0; i < 6; i++)
 	{
 		int statsRandom = rand() % 15;
 
-		drawStat((EStats)i, statsRandom+3, i);
+		drawStat((EStats)i,i);
 
 	}
 
 }
+
 
 
 void PlayerStatBox_t::draw(int x, int y)
@@ -65,14 +72,15 @@ void PlayerStatBox_t::draw(int x, int y)
 
 }
 
-void PlayerStatBox_t::drawStat(EStats statIndex, int value, int order)
+void PlayerStatBox_t::drawStat(EStats statIndex, int order)
 {
 	locate(m_x + 2, m_y + order + 2);
 
 	setColor(YELLOW);
 	printf("%s: ", statNames[statIndex]);
 	setColor(GREEN);
-	printf("%d", value);
+	printf("%d", m_stats[order]);
+
 
 	resetColor();
 }
